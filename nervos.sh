@@ -60,6 +60,41 @@ echo "提示：这里的信息很重要，请记录下你的钱包地址和lock_
 createPrivkey
 }
 
+restoreWalletByKey(){
+echo
+read -p "请输入你的私钥（privkey）：" pk
+read -p "请输入你的钱包地址：" wa
+cd $targetPath
+echo $pk > privkey
+echo $wa >> privkey
+cd $targetPath
+ckb-cli account import --privkey-path privkey
+echo
+echo "钱包已恢复完成"
+}
+
+restoreWalletByFile(){
+echo
+echo "当前路径："
+pwd
+echo "当前路径文件列表："
+ls -l
+echo
+echo "请输入你的private文件路径，如：/home/debian/privkey"
+read -p "private文件路径:" args
+while [ ! -f "$args" ]; do
+	echo "输入的文件路径不对，请重新输入"
+	read -p "private文件路径:" tp
+	args=$tp
+done
+cd $targetPath
+echo
+echo "提示：请输入新的钱包密码："
+ckb-cli account import --privkey-path $args
+echo
+echo "钱包已恢复完成"
+}
+
 showPrivkey(){
 echo "您的私钥已生成，第一行为您的私钥，第二行为钱包链编码："
 echo
@@ -105,39 +140,52 @@ echo
 flag=1
 read -p "请选择钱包创建方式 : 1.创建一个新钱包  2.通过已有私钥导入钱包 ,请选择 1 或 2 : " a
 if [ $a -eq 1 ]; then
-## 创建一个新钱包（create a new wallet）
-createWallet
+	## 创建一个新钱包（create a new wallet）
+	createWallet
 
-privkeyPath=$targetPath/privkey
-while [ ! -f "$privkeyPath" ]
-do
-echo "lock_args或密码错误，私钥生成失败，请重新生成"
-createPrivkey
-done
-showPrivkey
-if [ $flag -eq 1 ]; then
-## 部署ckb节点程序（run a ckb node）
-installNode
-fi
+	privkeyPath=$targetPath/privkey
+	while [ ! -f "$privkeyPath" ]
+	do
+		echo "lock_args或密码错误，私钥生成失败，请重新生成"
+		createPrivkey
+	done
+	showPrivkey
+	if [ $flag -eq 1 ]; then
+		## 部署ckb节点程序（run a ckb node）
+		installNode
+	fi
 
 elif [ $a -eq 2 ]; then
-## 通过私钥导入钱包
-echo
-echo "官方的钱包导入教程还没出来，所以现在我也不知道怎么导入！！！bye-bye"
-flag=2
-echo
-echo
-echo
+	## 通过私钥导入钱包
+	flag=2
+	while [ $flag -eq 2 ]; do
+		echo
+		read -p "请选择恢复方式 : 1.通过钱包私钥字符串恢复  2.通过钱包私钥文件（privkey）恢复 ,请选择 1 或 2 : " b
+		if [ $b -eq 1 ]; then
+			restoreWalletByKey
+			flag=1
+		elif [ $b -eq 2 ]; then
+			restoreWalletByFile
+			flag=1
+		else
+			echo "输入的数字不对，只能输入1或2"
+			flag=2
+		fi
+	done
+
+	if [ $flag -eq 1 ]; then
+		## 部署ckb节点程序（run a ckb node）
+		installNode
+	fi
+	echo
+	echo
+	echo
+
 else
-echo
-echo "你输入的什么啊！逗我玩呢？不干了！！！bye-bye"
-flag=2
-echo
-echo
-echo
+	echo
+	echo "你输入的什么啊！逗我玩呢？不干了！！！bye-bye"
+	flag=2
+	echo
+	echo
+	echo
 fi
-
-
-
-
-
