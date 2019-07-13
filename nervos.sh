@@ -3,8 +3,7 @@
 ## This is Nervos install shell,version 0.0.1
 ## Writen by BearWo 2019-07-11
 
-##https://github.com/nervosnetwork/ckb/releases/download/v0.15.6/ckb_v0.15.6_x86_64-unknown-linux-gnu.tar.gz
-##https://github.com/nervosnetwork/ckb-cli/releases/download/v0.15.0/ckb-cli_v0.15.0_x86_64-unknown-linux-gnu.tar.gz
+##https://github.com/nervosnetwork/ckb/releases/download/v0.16.0/ckb_v0.16.0_x86_64-unknown-linux-gnu.tar.gz
 
 clear
 echo "脚本执行首次时，非root用户需验证当前用户密码（已经验证过请忽略）"
@@ -17,11 +16,17 @@ echo "注意：文件将被安装在：$targetPath下"
 echo
 echo "===================开始下载ckb相关文件===================="
 echo
-ckb="https://github.com/nervosnetwork/ckb/releases/download/"
-ckbVersion="v0.15.6"
+#ckb="https://github.com/nervosnetwork/ckb/releases/download/"
+#ckbVersion="v0.16.0"
+#ckbFile="ckb_"$ckbVersion"_x86_64-unknown-linux-gnu"
+#ckbSuffix=".tar.gz"
+#ckbPath=$ckb$ckbVersion"/"$ckbFile$ckbSuffix
+##更改下载路径为国内源
+ckb="http://pukb0g8nl.bkt.clouddn.com/"
+ckbVersion="v0.16.0"
 ckbFile="ckb_"$ckbVersion"_x86_64-unknown-linux-gnu"
 ckbSuffix=".tar.gz"
-ckbPath=$ckb$ckbVersion"/"$ckbFile$ckbSuffix
+ckbPath=$ckb"/"$ckbFile$ckbSuffix
 
 ## 打扫卫生
 sudo rm -rf $targetPath/*
@@ -125,9 +130,15 @@ echo
 echo
 echo "节点程序已部署完成"
 echo
-echo "接下来你需要手动配置ckb.toml文件，找到里面的'[block_assembler]'代码块，并替换其中的lock_args"
-echo "能帮你的就在这了，去修改吧~"
-echo "改好之后使用命令'ckb run'即可启动节点，再开一个终端，使用命令'ckb miner'来启动挖矿程序"
+echo
+read -p "请输入你的lock_arg信息来配置你的同步节点：" args
+echo "[block_assembler]" >>  ckb.toml
+echo "code_hash = \"0x94334bdda40b69bae067d84937aa6bbccf8acd0df6626d4b9ac70d4612a11933\"" >> ckb.toml
+echo "args = [ \"$args\" ]"
+echo
+echo "节点已配置完成，节点同步将自动启动！请再打开一个终端，使用命令'ckb miner'来启动挖矿程序"
+echo "正在启动节点同步……"
+ckb run
 echo
 echo
 echo
