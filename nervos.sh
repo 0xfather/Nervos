@@ -134,7 +134,8 @@ echo
 read -p "请输入你的lock_arg信息来配置你的同步节点：" args
 echo "[block_assembler]" >>  ckb.toml
 echo "code_hash = \"0x94334bdda40b69bae067d84937aa6bbccf8acd0df6626d4b9ac70d4612a11933\"" >> ckb.toml
-echo "args = [ \"$args\" ]"
+argsStr="0x"$args
+echo "args = [ \"$argsStr\" ]" >> ckb.toml
 echo
 echo "节点已配置完成，节点同步将自动启动！请再打开一个终端，使用命令'ckb miner'来启动挖矿程序"
 echo "正在启动节点同步……"
