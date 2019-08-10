@@ -1,9 +1,10 @@
 #! /bin/bash
 
-## This is Nervos install shell,version 0.0.1
-## Writen by BearWo 2019-07-11
+## This is Nervos install shell,version 0.0.18
+## Writen by BearWo 2019-08-10
 
-##https://github.com/nervosnetwork/ckb/releases/download/v0.16.0/ckb_v0.16.0_x86_64-unknown-linux-gnu.tar.gz
+#https://github.com/nervosnetwork/ckb/releases/download/v0.16.0/ckb_v0.16.0_x86_64-unknown-linux-gnu.tar.gz
+#https://github.com/nervosnetwork/ckb/releases/download/v0.18.0/ckb_v0.18.0_x86_64-unknown-linux-gnu.tar.gz
 
 clear
 echo "脚本执行首次时，非root用户需验证当前用户密码（已经验证过请忽略）"
@@ -16,17 +17,18 @@ echo "注意：文件将被安装在：$targetPath下"
 echo
 echo "===================开始下载ckb相关文件===================="
 echo
-#ckb="https://github.com/nervosnetwork/ckb/releases/download/"
+##国内源没流量了，还得用国外源
+ckb="https://github.com/nervosnetwork/ckb/releases/download/"
+ckbVersion="v0.18.0"
+ckbFile="ckb_"$ckbVersion"_x86_64-unknown-linux-gnu"
+ckbSuffix=".tar.gz"
+ckbPath=$ckb$ckbVersion"/"$ckbFile$ckbSuffix
+##更改下载路径为国内源
+#ckb="http://pukb0g8nl.bkt.clouddn.com/"
 #ckbVersion="v0.16.0"
 #ckbFile="ckb_"$ckbVersion"_x86_64-unknown-linux-gnu"
 #ckbSuffix=".tar.gz"
-#ckbPath=$ckb$ckbVersion"/"$ckbFile$ckbSuffix
-##更改下载路径为国内源
-ckb="http://pukb0g8nl.bkt.clouddn.com/"
-ckbVersion="v0.16.0"
-ckbFile="ckb_"$ckbVersion"_x86_64-unknown-linux-gnu"
-ckbSuffix=".tar.gz"
-ckbPath=$ckb"/"$ckbFile$ckbSuffix
+#ckbPath=$ckb"/"$ckbFile$ckbSuffix
 
 ## 打扫卫生
 sudo rm -rf $targetPath/*
@@ -37,7 +39,7 @@ sudo rm -rf /usr/local/bin/ckb-cli
 
 ## 下载并安装ckb（download the ckb and redirect to bin）
 if [ ! -f "$ckbFile$ckbSuffix" ]; then
-wget -c $ckbPath
+wget -c $ckbPath --no-check-certificate
 fi
 tar -zxf $ckbFile$ckbSuffix -C $targetPath && \
 cd $targetPath
@@ -133,7 +135,7 @@ echo
 echo
 read -p "请输入你的lock_arg信息来配置你的同步节点：" args
 echo "[block_assembler]" >>  ckb.toml
-echo "code_hash = \"0x94334bdda40b69bae067d84937aa6bbccf8acd0df6626d4b9ac70d4612a11933\"" >> ckb.toml
+echo "code_hash = \"0x54811ce986d5c3e57eaafab22cdd080e32209e39590e204a99b32935f835a13c\"" >> ckb.toml
 argsStr="0x"$args
 echo "args = [ \"$argsStr\" ]" >> ckb.toml
 echo
