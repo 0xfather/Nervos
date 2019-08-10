@@ -69,8 +69,8 @@ createPrivkey
 
 restoreWalletByKey(){
 echo
-read -p "请输入你的私钥（privkey）：" pk
-read -p "请输入你的钱包地址：" wa
+read -p "请输入你的第一行私钥（privkey）：" pk
+read -p "请输入你的第二行私钥（privkey）：" wa
 cd $targetPath
 echo $pk > privkey
 echo $wa >> privkey
